@@ -9,13 +9,14 @@ import (
 )
 
 func main() {
-	// Part 1
+	// Read file
 	file, err := os.Open("day01/input")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error reading file: %v\n", err)
 		os.Exit(1)
 	}
 
+	// Part 1
 	result, err := Part1(file)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error calculating part 1: %v\n", err)
@@ -32,6 +33,77 @@ func main() {
 	}
 	fmt.Printf("part 2: %v\n", result)
 }
+
+func Part1(file io.Reader) (int, error) {
+	answer := 0
+	currentAmount := 50
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		dial, err := NewDial(scanner.Text())
+		if err != nil {
+			return 0, fmt.Errorf("error creating dial: %w", err)
+		}
+
+		switch dial.Direction {
+		case LEFT:
+			currentAmount -= dial.Amount
+			currentAmount %= 100
+			if currentAmount < 0 {
+				currentAmount += 100
+			}
+		case RIGHT:
+			currentAmount += dial.Amount
+			currentAmount %= 100
+		}
+
+		if currentAmount == 0 {
+			answer++
+		}
+	}
+
+	return answer, nil
+}
+
+func Part2(file io.Reader) (int, error) {
+	answer := 0
+	currentAmount := 50
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		dial, err := NewDial(scanner.Text())
+		if err != nil {
+			return 0, fmt.Errorf("error creating dial: %w", err)
+		}
+
+		prev := currentAmount
+
+		switch dial.Direction {
+		case RIGHT:
+			currentAmount += dial.Amount
+			answer += currentAmount / 100
+			currentAmount %= 100
+		case LEFT:
+			currentAmount -= dial.Amount
+			for currentAmount < 0 {
+				currentAmount += 100
+				answer++
+			}
+			if currentAmount == 0 {
+				answer++
+			}
+			if prev == 0 {
+				answer--
+			}
+		}
+	}
+
+	return answer, nil
+}
+
+////////////////////////////
+// DIAL
+////////////////////////////
 
 type Direction rune
 
@@ -75,79 +147,4 @@ func NewDial(text string) (Dial, error) {
 
 func (d Dial) String() string {
 	return fmt.Sprintf("%c%d", d.Direction, d.Amount)
-}
-
-func Part1(file io.Reader) (int, error) {
-	answer := 0
-	currentAmount := 50
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		dial, err := NewDial(scanner.Text())
-		if err != nil {
-			return 0, fmt.Errorf("error creating dial: %w", err)
-		}
-
-		switch dial.Direction {
-		case LEFT:
-			currentAmount -= dial.Amount
-			for currentAmount < 0 {
-				currentAmount += 100
-			}
-		case RIGHT:
-			currentAmount += dial.Amount
-			for currentAmount > 99 {
-				currentAmount -= 100
-			}
-		}
-
-		if currentAmount == 0 {
-			answer++
-		}
-	}
-
-	return answer, nil
-}
-
-func Part2(file io.Reader) (int, error) {
-	answer := 0
-	currentAmount := 50
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		dial, err := NewDial(scanner.Text())
-		if err != nil {
-			return 0, fmt.Errorf("error creating dial: %w", err)
-		}
-
-		prev := currentAmount
-
-		switch dial.Direction {
-		case LEFT:
-			currentAmount -= dial.Amount
-			for currentAmount < 0 {
-				currentAmount += 100
-				answer++
-			}
-			if currentAmount == 0 {
-				answer++
-			}
-			if prev == 0 {
-				answer--
-			}
-		case RIGHT:
-			currentAmount += dial.Amount
-			answer += currentAmount / 100
-			currentAmount %= 100
-		}
-	}
-
-	return answer, nil
-}
-
-func abs(num int) int {
-	if num < 0 {
-		return -num
-	}
-	return num
 }

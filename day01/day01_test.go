@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strings"
 	"testing"
 )
@@ -33,7 +34,7 @@ func TestNewDial(t *testing.T) {
 	}
 }
 
-func TestDay1Part1(t *testing.T) {
+func TestPart1(t *testing.T) {
 	file := strings.NewReader(`L68
 L30
 R48
@@ -135,5 +136,34 @@ L5`,
 				t.Fatalf("want %v, got %v", want, got)
 			}
 		})
+	}
+}
+
+func TestAnswers(t *testing.T) {
+	part1, part2 := 982, 6106
+
+	// Read file
+	file, err := os.Open("./input")
+	if err != nil {
+		t.Fatalf("could not read file: %v", err)
+	}
+
+	// Part 1
+	answer, err := Part1(file)
+	if err != nil {
+		t.Fatalf("want err nil, got %v", err)
+	}
+	if answer != part1 {
+		t.Fatalf("want answer %v, got %v", part1, answer)
+	}
+
+	// Part 2
+	file.Seek(0, 0)
+	answer, err = Part2(file)
+	if err != nil {
+		t.Fatalf("want err nil, got %v", err)
+	}
+	if answer != part2 {
+		t.Fatalf("want answer %v, got %v", part1, answer)
 	}
 }
