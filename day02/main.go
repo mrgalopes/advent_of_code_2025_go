@@ -93,32 +93,36 @@ func InvalidIDsBetween2(start, end int64) []int64 {
 	result := []int64{}
 
 	for n := start; n <= end; n++ {
-		s := strconv.FormatInt(n, 10)
-		isInvalid := false
-
-		for i := 1; i <= len(s)/2; i++ {
-			if len(s)%i != 0 {
-				continue
-			}
-			s1 := s[:i]
-			b := true
-			for j := i; j+i <= len(s); j += i {
-				s2 := s[j : i+j]
-				if s1 != s2 {
-					b = false
-					break
-				}
-			}
-			if b {
-				isInvalid = true
-				break
-			}
-		}
-
-		if isInvalid {
+		if isInvalid(n) {
 			result = append(result, n)
 		}
 	}
 
 	return result
+}
+
+func isInvalid(n int64) bool {
+	s := strconv.FormatInt(n, 10)
+
+	for i := 1; i <= len(s)/2; i++ {
+		if len(s)%i != 0 {
+			continue
+		}
+
+		substr1 := s[:i]
+		b := true
+		for j := i; j+i <= len(s); j += i {
+			substr2 := s[j : i+j]
+
+			if substr1 != substr2 {
+				b = false
+				break
+			}
+		}
+		if b {
+			return true
+		}
+	}
+
+	return false
 }
