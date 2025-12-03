@@ -74,19 +74,12 @@ func Joltage2(battery string) int {
 		idxs[i] = i + len(battery) - 12
 	}
 
-	m, idx := 0, idxs[0]
-	for i := idxs[0]; i >= 0; i-- {
-		d := int(battery[i] - '0')
-		if d >= m {
-			m = d
-			idx = i
+	for j := 0; j < len(idxs); j++ {
+		m, idx, end := 0, idxs[j], -1
+		if j > 0 {
+			end = idxs[j-1]
 		}
-	}
-	idxs[0] = idx
-
-	for j := 1; j < len(idxs); j++ {
-		m, idx := 0, idxs[j]
-		for i := idxs[j]; i > idxs[j-1]; i-- {
+		for i := idxs[j]; i > end; i-- {
 			d := int(battery[i] - '0')
 			if d >= m {
 				m = d
