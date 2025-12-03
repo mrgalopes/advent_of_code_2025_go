@@ -26,52 +26,28 @@ func main() {
 }
 
 func Part1(input io.Reader) int {
-	answer := 0
-
-	scanner := bufio.NewScanner(input)
-	for scanner.Scan() {
-		answer += Joltage1(scanner.Text())
-	}
-
-	return answer
-}
-
-func Joltage1(battery string) int {
-	firstDigit, idx := int(battery[0]-'0'), 0
-	for i := 1; i < len(battery)-1; i++ {
-		d := int(battery[i] - '0')
-		if d > firstDigit {
-			firstDigit = d
-			idx = i
-		}
-	}
-
-	secondDigit := int(battery[idx+1] - '0')
-	for i := idx + 2; i < len(battery); i++ {
-		d := int(battery[i] - '0')
-		if d > secondDigit {
-			secondDigit = d
-		}
-	}
-
-	return 10*firstDigit + secondDigit
+	return Solve(input, 2)
 }
 
 func Part2(input io.Reader) int {
+	return Solve(input, 12)
+}
+
+func Solve(input io.Reader, quantity int) int {
 	answer := 0
 
 	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
-		answer += Joltage2(scanner.Text())
+		answer += Joltage(scanner.Text(), quantity)
 	}
 
 	return answer
 }
 
-func Joltage2(battery string) int {
-	idxs := make([]int, 12)
-	for i := range 12 {
-		idxs[i] = i + len(battery) - 12
+func Joltage(battery string, quantity int) int {
+	idxs := make([]int, quantity)
+	for i := range quantity {
+		idxs[i] = i + len(battery) - quantity
 	}
 
 	for j := 0; j < len(idxs); j++ {

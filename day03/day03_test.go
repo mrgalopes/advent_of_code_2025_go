@@ -23,7 +23,7 @@ func TestJoltage1(t *testing.T) {
 
 	for _, tC := range tests {
 		t.Run(tC.battery, func(t *testing.T) {
-			got := Joltage1(tC.battery)
+			got := Joltage(tC.battery, 2)
 			want := tC.answer
 			if got != want {
 				t.Fatalf("want %v, got %v", want, got)
@@ -72,7 +72,7 @@ func TestJoltage2(t *testing.T) {
 
 	for _, tC := range tests {
 		t.Run(tC.battery, func(t *testing.T) {
-			got := Joltage2(tC.battery)
+			got := Joltage(tC.battery, 12)
 			want := tC.answer
 			if got != want {
 				t.Fatalf("want %v, got %v", want, got)
